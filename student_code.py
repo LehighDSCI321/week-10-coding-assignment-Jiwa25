@@ -191,7 +191,7 @@ class VersatileDigraph:
             # create a figure
             p = figure(x_range = sorted_edges, title = title)
             # color the bars
-            source = ColumnDataSource(data=dict(edge=edge_names,weight=edge_weights,color=Bright6))
+            source = ColumnDataSource({"edge":edge_names,"weight":edge_weights,"color":Bright6})
             # render vertical bars
             p.vbar(x='edge', top='weight', width=0.8, color='color', source=source)
             # customize the graph
@@ -229,19 +229,10 @@ class TraversableDigraph(SortableDigraph):
     '''
     represent a traversable digraph
     '''
-    # def dfs(self,node,visited=None):
-    #     '''perform a depth-first search traversal'''
-    #     if visited is None:
-    #         visited = set()
-    #     visited.add(node)
-    #     for u in self.successors(node):
-    #         if u not in visited:
-    #             yield from self.dfs(u,visited)
- 
     def dfs(self, node):
         '''perform a depth-first search traversal from a certain node'''
         # Visited set and LIFO stack
-        visited, stack = set(node), []
+        visited, stack = {node}, []
         # We plan on visiting node's adjacent nodes
         stack.extend(self.successors(node))
         while stack:
