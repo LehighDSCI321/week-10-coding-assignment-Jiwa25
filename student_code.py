@@ -237,40 +237,36 @@ class TraversableDigraph(SortableDigraph):
     #     for u in self.successors(node):
     #         if u not in visited:
     #             yield from self.dfs(u,visited)
-
-    def dfs(self, s):
-        '''perform a depth-first search traversal'''
+ 
+    def dfs(self, node):
+        '''perform a depth-first search traversal from a certain node'''
         # Visited set and LIFO stack
-        visited, stack = set(), []
-        # We plan on visiting s
-        stack.append(s)
-        # nodes waiting to process
+        visited, stack = set(node), []
+        # We plan on visiting node's adjacent nodes
+        stack.extend(self.successors(node))
         while stack:
             # Get one (Last-In, First-Out)
             u = stack.pop()
-            # Already visited: Skip it
-            if u in visited:
-                continue
-            # We've visited it now
-            visited.add(u)
-            # Schedule all neighbors (append them to the end)
-            stack.extend(self.successors(u))
-            # Report u as visited (using yield makes this a generator)
-            yield u
+            if u not in visited:    # Unvisited
+                visited.add(u)
+                # Schedule all neighbors (append them to the end)
+                stack.extend(self.successors(u))
+                # Report u as visited
+                yield u
 
     def bfs(self, node):
         '''
-        perform a breadth-first search traversal
+        perform a breadth-first search traversal from a certain node
         '''
         # parents dict and FIFO queue
         parents, queue = {node: None}, deque([node])
         while queue:
             u = queue.popleft()
-            yield u
             for v in self.successors(u):    # adjacent nodes
                 if v not in parents:    # unvisited
                     parents[v] = u      # mark u as v's parent
                     queue.append(v)
+                    yield v
 
 class DAG(TraversableDigraph):
     '''
